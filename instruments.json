@@ -8,97 +8,113 @@
   {
     "name": "Oboe",
     "abbreviations": ["OB", "OBOE"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Flauto Traverso 1",
     "abbreviations": ["FL1", "FLUTE1"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Clarinetto 2", 
     "abbreviations": ["CL2", "C2"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Clarinetto Basso",
     "abbreviations": ["CLB", "CB"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Fagotto",  
     "abbreviations": ["BSN", "BASSOON"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Corno Francese",
     "abbreviations": ["HF", "HORN"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Flauto Traverso 2",
     "abbreviations": ["FL2", "FLUTE2"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Clarinetto 3", 
     "abbreviations": ["CL3", "C3"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Tromba",  
     "abbreviations": ["TP", "TRUMPET"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Sax Baritono",
     "abbreviations": ["SAXB", "BARITONESAX"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Sax Tenore",
     "abbreviations": ["SAXT", "TENORSAX"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Sax Contralto",
     "abbreviations": ["SAXA", "ALTO"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Percussioni",
     "abbreviations": ["PERC", "PERCUSSION"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Tuba", 
     "abbreviations": ["TUB", "TUBA"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Euphonium",
     "abbreviations": ["EUPH", "EUPHONIUM"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   },
   {
     "name": "Trombone",
     "abbreviations": ["TB", "TROMBONE"],
-    "link": "",
+    "courses_id": "",
+    "teachers_id": "",
     "pic": ""
   }
 ]
