@@ -1,3 +1,9 @@
+async function fetchData() {
+  const response = await fetch("instruments.json");
+  const data = await response.json();
+  return data;
+}
+
 function polarToCartesian(cx, cy, r, angle) {
   const rad = ((angle - 90) * Math.PI) / 180.0;
   return {
@@ -23,14 +29,16 @@ Z
 `;
 }
 
-function drawSections() {
+async function drawSections() {
+  const data = await fetchData();
+
   const svg = document.getElementById("chart");
   const cx = 500,
     cy = 500;
   const bands = [
     { count: 3, rInner: 50, rOuter: 150 },
-    { count: 5, rInner: 150, rOuter: 250 },
-    { count: 5, rInner: 250, rOuter: 375 },
+    { count: 5, rInner: 150, rOuter: 260 },
+    { count: 5, rInner: 260, rOuter: 375 },
     { count: 4, rInner: 375, rOuter: 500 },
   ];
 
@@ -51,14 +59,8 @@ function drawSections() {
         endAngle % 360
       );
 
-      const group = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "a"
-      );
-      group.setAttribute(
-        "href",
-        `/strumenti/strumento${sectionIndex}.html`
-      );
+      const group = document.createElementNS("http://www.w3.org/2000/svg", "a");
+      group.setAttribute("href", `/strumenti/strumento${sectionIndex}.html`);
 
       const path = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -80,7 +82,11 @@ function drawSections() {
       );
       text.setAttribute("x", label.x);
       text.setAttribute("y", label.y);
-      text.textContent = `Strumento ${sectionIndex}`;
+      if (data[sectionIndex - 1]) {
+        text.textContent = data[sectionIndex - 1].name;
+      } else {
+        console.error("Elemento non trovato in data:", sectionIndex - 1);
+      }
 
       group.appendChild(path);
       group.appendChild(text);
