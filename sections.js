@@ -30,69 +30,96 @@ Z
 }
 
 async function drawSections() {
-  const data = await fetchData();
-
+  const instruments = await fetchData();
+  
   const svg = document.getElementById("chart");
-  const cx = 500,
-    cy = 500;
-  const bands = [
-    { count: 3, rInner: 50, rOuter: 150 },
-    { count: 5, rInner: 150, rOuter: 260 },
-    { count: 5, rInner: 260, rOuter: 375 },
-    { count: 4, rInner: 375, rOuter: 500 },
+  const cx = 500, cy = 500;
+  
+  // Definizione delle dimensioni per ogni riga
+  const rowDimensions = [
+    { rInner: 50, rOuter: 150 },   // Riga 1
+    { rInner: 150, rOuter: 260 },  // Riga 2
+    { rInner: 260, rOuter: 375 },  // Riga 3
+    { rInner: 375, rOuter: 500 }   // Riga 4
   ];
 
-  let sectionIndex = 1;
-  bands.forEach((band) => {
-    const totalAngle = 180;
-    const startOffset = 270; // Start from 270° to go clockwise to 90°
-    const angleStep = totalAngle / band.count;
-    for (let i = 0; i < band.count; i++) {
-      const startAngle = startOffset + i * angleStep;
-      const endAngle = startOffset + (i + 1) * angleStep;
-      const pathData = describeSection(
-        cx,
-        cy,
-        band.rOuter,
-        band.rInner,
-        startAngle % 360,
-        endAngle % 360
-      );
+  // Filtra solo gli strumenti che hanno startAngle, endAngle e rowNumber definiti
+  const validInstruments = instruments.filter(
+    instrument => 
+      instrument.startAngle !== "" && 
+      instrument.endAngle !== "" && 
+      instrument.rowNumber !== ""
+  );
 
-      const group = document.createElementNS("http://www.w3.org/2000/svg", "a");
-      group.setAttribute("href", `/strumenti/strumento${sectionIndex}.html`);
-
-      const path = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      path.setAttribute("d", pathData);
-      path.setAttribute("class", "section");
-
-      const labelAngle = (startAngle + endAngle) / 2;
-      const label = polarToCartesian(
-        cx,
-        cy,
-        (band.rOuter + band.rInner) / 2,
-        labelAngle % 360
-      );
-      const text = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "text"
-      );
-      text.setAttribute("x", label.x);
-      text.setAttribute("y", label.y);
-      if (data[sectionIndex - 1]) {
-        text.textContent = data[sectionIndex - 1].name;
-      } else {
-        console.error("Elemento non trovato in data:", sectionIndex - 1);
-      }
-
-      group.appendChild(path);
-      group.appendChild(text);
-      svg.appendChild(group);
-
-      sectionIndex++;
+  validInstruments.forEach((instrument, index) => {
+    const rowIndex = parseInt(instrument.rowNumber) - 1;
+    
+    // Verifica che il rowNumber sia valido
+    if (rowIndex < 0 || rowIndex >= rowDimensions.length) {
+      console.error(`Numero di riga non valido per ${instrument.name}: ${instrument.rowNumber}`);
+      return;
     }
+    
+    const { rInner, rOuter } = rowDimensions[rowIndex];
+    const startAngle = parseFloat(instrument.startAngle);
+    const endAngle = parseFloat(instrument.endAngle);
+    
+    // Verifica che startAngle e endAngle siano numeri validi
+    if (isNaN(startAngle) || isNaN(endAngle)) {
+      console.error(`Angoli non validi per ${instrument.name}: startAngle=${instrument.startAngle}, endAngle=${instrument.endAngle}`);
+      return;
+    }
+    
+    const pathData = describeSection(
+      cx,
+      cy,
+      rOuter,
+      rInner,
+      startAngle % 360,
+      endAngle % 360
+    );
+
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "a");
+    // Usa il link dal JSON se disponibile
+    if (instrument.link && instrument.link !== "") {
+      group.setAttribute("href", instrument.link);
+    } else {
+      // Fallback al link predefinito
+      group.setAttribute("href", `/strumenti/${instrument.abbreviations[0]}.html`);
+    }
+
+    const path = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    path.setAttribute("d", pathData);
+    path.setAttribute("class", "section");
+    path.setAttribute("id", `instrument-${instrument.abbreviations[0]}`);
+
+    // Calcola la posizione del testo al centro della sezione
+    const labelAngle = (startAngle + endAngle) / 2;
+    const label = polarToCartesian(
+      cx,
+      cy,
+      (rOuter + rInner) / 2,
+      labelAngle % 360
+    );
+    
+    const text = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    text.setAttribute("x", label.x);
+    text.setAttribute("y", label.y);
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("dominant-baseline", "middle");
+    text.textContent = instrument.name;
+
+    group.appendChild(path);
+    group.appendChild(text);
+    svg.appendChild(group);
   });
 }
+
+// Chiama la funzione per disegnare le sezioni quando il documento è caricato
+document.addEventListener("DOMContentLoaded", drawSections);
