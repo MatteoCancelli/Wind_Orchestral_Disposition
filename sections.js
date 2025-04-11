@@ -65,10 +65,130 @@ function writeLabel(svgGroup, cx, cy, rInner, rOuter, startAngle, endAngle, name
   svgGroup.appendChild(text);
 }
 
+function setupModal() {
+  let modal = document.getElementById("instrument-modal");
+  
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "instrument-modal";
+    
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+    
+    const closeButton = document.createElement("span");
+    closeButton.className = "close-button";
+    closeButton.innerHTML = "&times;";
+    closeButton.onclick = function() {
+      modal.style.display = "none";
+    };
+    
+    const modalImage = document.createElement("img");
+    modalImage.id = "modal-instrument-image";
+    modalImage.alt = "Instrument Image";
+    
+    const modalTitle = document.createElement("h2");
+    modalTitle.id = "modal-instrument-title";
+    
+    const modalButton = document.createElement("button");
+    modalButton.id = "modal-instrument-button";
+    modalButton.textContent = "Vai alla pagina dello strumento";
+    
+    modalContent.appendChild(closeButton);
+    modalContent.appendChild(modalImage);
+    modalContent.appendChild(modalTitle);
+    modalContent.appendChild(modalButton);
+    modal.appendChild(modalContent);
+    
+    document.body.appendChild(modal);
+    
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+  }
+  
+  return modal;
+}
+
+function createPreloadContainer() {
+  let preloadDiv = document.getElementById("instrument-images-preload");
+  if (!preloadDiv) {
+    preloadDiv = document.createElement("div");
+    preloadDiv.id = "instrument-images-preload";
+    preloadDiv.style.display = "none";
+    document.body.appendChild(preloadDiv);
+  }
+  return preloadDiv;
+}
+
+function preloadInstrumentImage(instrument, preloadDiv) {
+  if (!instrument.pic || instrument.pic.trim() === "") {
+    return null;
+  }
+  
+  const imgId = `img-${instrument.abbreviations[0]}`;
+  
+  let img = document.getElementById(imgId);
+  if (!img) {
+    img = document.createElement("img");
+    img.id = imgId;
+    img.alt = instrument.name;
+    img.style.maxWidth = "100%";
+    img.style.maxHeight = "300px";
+    img.src = instrument.pic;
+    
+    preloadDiv.appendChild(img);
+  }
+  
+  return imgId;
+}
+
+function preloadInstrumentImages(instruments) {
+  const preloadDiv = createPreloadContainer();
+  const imageMap = {};
+  
+  instruments.forEach((instrument) => {
+    const imgId = preloadInstrumentImage(instrument, preloadDiv);
+    if (imgId) {
+      imageMap[instrument.abbreviations[0]] = imgId;
+    }
+  });
+  
+  return imageMap;
+}
+
+function showInstrumentModal(instrument, imageMap) {
+  const modal = document.getElementById("instrument-modal");
+  const modalImage = document.getElementById("modal-instrument-image");
+  const modalTitle = document.getElementById("modal-instrument-title");
+  const modalButton = document.getElementById("modal-instrument-button");
+  
+  modalTitle.textContent = instrument.name;
+  
+  if (instrument.pic && instrument.pic.trim() !== "" && imageMap[instrument.abbreviations[0]]) {
+    const originalImg = document.getElementById(imageMap[instrument.abbreviations[0]]);
+    modalImage.src = originalImg.src;
+    modalImage.style.display = "block";
+  } else {
+    modalImage.style.display = "none";
+  }
+  
+  modalButton.onclick = function() {
+    window.location.href = `/instrument.html?id=${instrument.abbreviations[0]}`;
+  };
+  
+  modal.style.display = "block";
+}
+
 function renderSections(instruments, svg, cx, cy, rowDimensions, svgPixelWidth) {
   const validInstruments = instruments.filter(i =>
     i.startAngle !== "" && i.endAngle !== "" && i.rowNumber !== ""
   );
+  
+  setupModal();
+  
+  const imageMap = preloadInstrumentImages(validInstruments);
 
   validInstruments.forEach((instrument) => {
     const rowIndex = parseInt(instrument.rowNumber) - 1;
@@ -86,10 +206,13 @@ function renderSections(instruments, svg, cx, cy, rowDimensions, svgPixelWidth) 
     path.setAttribute("d", pathData);
     path.setAttribute("class", "section");
     path.setAttribute("id", `instrument-${instrument.abbreviations[0]}`);
+    
+    path.addEventListener("click", function() {
+      showInstrumentModal(instrument, imageMap);
+    });
+    
     group.appendChild(path);
-
     writeLabel(group, cx, cy, rInner, rOuter, startAngle, endAngle, instrument.name, instrument.abbreviations, svgPixelWidth);
-
     svg.appendChild(group);
   });
 }
