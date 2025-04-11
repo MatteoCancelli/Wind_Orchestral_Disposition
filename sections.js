@@ -173,8 +173,29 @@ function displayInstrumentImage(abbr, imageMap, instrumentName, imageContainer, 
 }
 
 function updateImageContainerPosition(container, event) {
-  container.style.left = (event.clientX + 10) + "px";
-  container.style.top = (event.clientY + 10) + "px";
+  const containerWidth = container.offsetWidth;
+  const containerHeight = container.offsetHeight;
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  
+  let left = event.clientX + 20;
+  let top = event.clientY + 20;
+  
+  // Controlla se il container esce dal bordo destro
+  if (left + containerWidth + 100 > windowWidth) {
+    left = event.clientX - containerWidth - 10;
+  }
+  
+  // Controlla se il container esce dal bordo inferiore
+  if (top + containerHeight + 300 > windowHeight) {
+    top = event.clientY - containerHeight - 10;
+  }
+  
+  left = Math.max(10, left);
+  top = Math.max(10, top);
+  
+  container.style.left = left + "px";
+  container.style.top = top + "px";
 }
 
 function createSectionPath(cx, cy, rowDimensions, instrument) {
