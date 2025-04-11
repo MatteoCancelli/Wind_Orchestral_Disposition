@@ -21,40 +21,61 @@ function describeSection(cx, cy, rOuter, rInner, startAngle, endAngle) {
   const largeArc = (endAngle - startAngle + 360) % 360 > 180 ? 1 : 0;
 
   return `
-M ${p1.x},${p1.y}
-A ${rOuter},${rOuter} 0 ${largeArc},1 ${p2.x},${p2.y}
-L ${p3.x},${p3.y}
-A ${rInner},${rInner} 0 ${largeArc},0 ${p4.x},${p4.y}
-Z
-`;
+    M ${p1.x},${p1.y}
+    A ${rOuter},${rOuter} 0 ${largeArc},1 ${p2.x},${p2.y}
+    L ${p3.x},${p3.y}
+    A ${rInner},${rInner} 0 ${largeArc},0 ${p4.x},${p4.y}
+    Z
+  `;
 }
 
-function writeLabel(textElement, labelText, maxLines = 3) {
-  const parts = labelText.split(" ");
-  const lines = [];
+function writeLabel(svgGroup, cx, cy, rInner, rOuter, startAngle, endAngle, name, abbreviations, svgPixelWidth) {
+  const fontSizePx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--text-font-size')) || 22;
+  const labelAngle = (startAngle + endAngle) / 2;
+  const labelPos = polarToCartesian(cx, cy, (rInner + rOuter) / 2, labelAngle % 360);
+  const arcLength = ((endAngle - startAngle + 360) % 360) * Math.PI * ((rOuter + rInner) / 2) / 180;
+  const scaleFactor = svgPixelWidth / 1000;
+  const realArcLength = arcLength * scaleFactor;
+  const arcHeight = (rOuter - rInner) * scaleFactor;
 
-  if (parts.length <= maxLines) {
-    lines.push(...parts);
+  const approxTextWidth = Math.max(...name.split(" ").map(w => w.length)) * fontSizePx * 0.6;
+  const approxTextHeight = name.split(" ").length * fontSizePx * 1.6;
+
+  let labelLines;
+  if (realArcLength < approxTextWidth || arcHeight < approxTextHeight) {
+    labelLines = [abbreviations[0]];
   } else {
-    lines.push(parts.slice(0, parts.length - 1).join(" "));
-    lines.push(parts[parts.length - 1]);
+    labelLines = name.split(" ");
   }
 
-  lines.forEach((line, i) => {
+  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  text.setAttribute("x", labelPos.x);
+  text.setAttribute("y", labelPos.y);
+  text.setAttribute("text-anchor", "middle");
+  text.setAttribute("dominant-baseline", "middle");
+
+  labelLines.forEach((line, i) => {
     const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
-    tspan.setAttribute("x", textElement.getAttribute("x"));
+    tspan.setAttribute("x", labelPos.x);
     tspan.setAttribute("dy", i === 0 ? "0" : "1.2em");
     tspan.textContent = line;
-    textElement.appendChild(tspan);
+    text.appendChild(tspan);
   });
+
+  svgGroup.appendChild(text);
 }
+
+
 
 async function drawSections() {
   const instruments = await fetchData();
-
   const svg = document.getElementById("chart");
-  const cx = 500, cy = 500;
+  svg.innerHTML = ""; 
 
+  const bbox = svg.getBoundingClientRect(); 
+  const svgPixelWidth = bbox.width; 
+
+  const cx = 500, cy = 500; // viewBox coords
   const rowDimensions = [
     { rInner: 50, rOuter: 150 },
     { rInner: 150, rOuter: 260 },
@@ -62,69 +83,35 @@ async function drawSections() {
     { rInner: 375, rOuter: 500 }
   ];
 
-  const validInstruments = instruments.filter(
-    instrument =>
-      instrument.startAngle !== "" &&
-      instrument.endAngle !== "" &&
-      instrument.rowNumber !== ""
+  const validInstruments = instruments.filter(i =>
+    i.startAngle !== "" && i.endAngle !== "" && i.rowNumber !== ""
   );
 
   validInstruments.forEach((instrument) => {
     const rowIndex = parseInt(instrument.rowNumber) - 1;
-
-    if (rowIndex < 0 || rowIndex >= rowDimensions.length) {
-      console.error(`Not valid row number ${instrument.name}: ${instrument.rowNumber}`);
-      return;
-    }
+    if (rowIndex < 0 || rowIndex >= rowDimensions.length) return;
 
     const { rInner, rOuter } = rowDimensions[rowIndex];
     const startAngle = parseFloat(instrument.startAngle);
     const endAngle = parseFloat(instrument.endAngle);
+    if (isNaN(startAngle) || isNaN(endAngle)) return;
 
-    if (isNaN(startAngle) || isNaN(endAngle)) {
-      console.error(`Not valid angle ${instrument.name}: startAngle=${instrument.startAngle}, endAngle=${instrument.endAngle}`);
-      return;
-    }
-
-    const pathData = describeSection(
-      cx,
-      cy,
-      rOuter,
-      rInner,
-      startAngle % 360,
-      endAngle % 360
-    );
-
+    const pathData = describeSection(cx, cy, rOuter, rInner, startAngle % 360, endAngle % 360);
     const group = document.createElementNS("http://www.w3.org/2000/svg", "a");
-
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
     path.setAttribute("d", pathData);
     path.setAttribute("class", "section");
     path.setAttribute("id", `instrument-${instrument.abbreviations[0]}`);
-
-    const labelAngle = (startAngle + endAngle) / 2;
-    const label = polarToCartesian(
-      cx,
-      cy,
-      (rOuter + rInner) / 2,
-      labelAngle % 360
-    );
-
-    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    text.setAttribute("x", label.x);
-    text.setAttribute("y", label.y);
-    text.setAttribute("text-anchor", "middle");
-    text.setAttribute("dominant-baseline", "middle");
-
-    const labelText = instrument.name.length > 17 && instrument.abbreviations.length > 0
-      ? instrument.abbreviations[0]
-      : instrument.name;
-    writeLabel(text, labelText);
-
     group.appendChild(path);
-    group.appendChild(text);
+
+    writeLabel(group, cx, cy, rInner, rOuter, startAngle, endAngle, instrument.name, instrument.abbreviations, svgPixelWidth);
+
     svg.appendChild(group);
   });
 }
 
-document.addEventListener("DOMContentLoaded", drawSections);
+window.addEventListener("DOMContentLoaded", drawSections);
+window.addEventListener("resize", () => {
+  if (document.getElementById("chart")) drawSections();
+});

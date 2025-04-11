@@ -16,7 +16,7 @@ svg {
     cursor: pointer;
   }
   text {
-    font-size: 14px;
+    font-size: 25px;
     text-anchor: middle;
     dominant-baseline: middle;
     pointer-events: none;
