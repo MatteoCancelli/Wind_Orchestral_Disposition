@@ -29,43 +29,63 @@ Z
 `;
 }
 
+function writeLabel(textElement, labelText, maxLines = 3) {
+  const parts = labelText.split(" ");
+  const lines = [];
+
+  if (parts.length <= maxLines) {
+    lines.push(...parts);
+  } else {
+    lines.push(parts.slice(0, parts.length - 1).join(" "));
+    lines.push(parts[parts.length - 1]);
+  }
+
+  lines.forEach((line, i) => {
+    const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+    tspan.setAttribute("x", textElement.getAttribute("x"));
+    tspan.setAttribute("dy", i === 0 ? "0" : "1.2em");
+    tspan.textContent = line;
+    textElement.appendChild(tspan);
+  });
+}
+
 async function drawSections() {
   const instruments = await fetchData();
-  
+
   const svg = document.getElementById("chart");
   const cx = 500, cy = 500;
-  
+
   const rowDimensions = [
-    { rInner: 50, rOuter: 150 },   // Riga 1
-    { rInner: 150, rOuter: 260 },  // Riga 2
-    { rInner: 260, rOuter: 375 },  // Riga 3
-    { rInner: 375, rOuter: 500 }   // Riga 4
+    { rInner: 50, rOuter: 150 },
+    { rInner: 150, rOuter: 260 },
+    { rInner: 260, rOuter: 375 },
+    { rInner: 375, rOuter: 500 }
   ];
 
   const validInstruments = instruments.filter(
-    instrument => 
-      instrument.startAngle !== "" && 
-      instrument.endAngle !== "" && 
+    instrument =>
+      instrument.startAngle !== "" &&
+      instrument.endAngle !== "" &&
       instrument.rowNumber !== ""
   );
 
-  validInstruments.forEach((instrument, index) => {
+  validInstruments.forEach((instrument) => {
     const rowIndex = parseInt(instrument.rowNumber) - 1;
-    
+
     if (rowIndex < 0 || rowIndex >= rowDimensions.length) {
       console.error(`Not valid row number ${instrument.name}: ${instrument.rowNumber}`);
       return;
     }
-    
+
     const { rInner, rOuter } = rowDimensions[rowIndex];
     const startAngle = parseFloat(instrument.startAngle);
     const endAngle = parseFloat(instrument.endAngle);
-    
+
     if (isNaN(startAngle) || isNaN(endAngle)) {
       console.error(`Not valid angle ${instrument.name}: startAngle=${instrument.startAngle}, endAngle=${instrument.endAngle}`);
       return;
     }
-    
+
     const pathData = describeSection(
       cx,
       cy,
@@ -76,23 +96,12 @@ async function drawSections() {
     );
 
     const group = document.createElementNS("http://www.w3.org/2000/svg", "a");
-    // Usa il link dal JSON se disponibile
-    // if (instrument.link && instrument.link !== "") {
-    //   group.setAttribute("href", instrument.link);
-    // } else {
-    //   // Fallback al link predefinito
-    //   group.setAttribute("href", `/strumenti/${instrument.abbreviations[0]}.html`);
-    // }
 
-    const path = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "path"
-    );
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", pathData);
     path.setAttribute("class", "section");
     path.setAttribute("id", `instrument-${instrument.abbreviations[0]}`);
 
-    // Calcola la posizione del testo al centro della sezione
     const labelAngle = (startAngle + endAngle) / 2;
     const label = polarToCartesian(
       cx,
@@ -100,16 +109,17 @@ async function drawSections() {
       (rOuter + rInner) / 2,
       labelAngle % 360
     );
-    
-    const text = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
     text.setAttribute("x", label.x);
     text.setAttribute("y", label.y);
     text.setAttribute("text-anchor", "middle");
     text.setAttribute("dominant-baseline", "middle");
-    text.textContent = instrument.name;
+
+    const labelText = instrument.name.length > 17 && instrument.abbreviations.length > 0
+      ? instrument.abbreviations[0]
+      : instrument.name;
+    writeLabel(text, labelText);
 
     group.appendChild(path);
     group.appendChild(text);
@@ -117,5 +127,4 @@ async function drawSections() {
   });
 }
 
-// Chiama la funzione per disegnare le sezioni quando il documento è caricato
 document.addEventListener("DOMContentLoaded", drawSections);
