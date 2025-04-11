@@ -18,7 +18,7 @@ svg {
   text {
     font-size: 14px;
     text-anchor: middle;
-    alignment-baseline: middle;
+    dominant-baseline: middle;
     pointer-events: none;
     fill: #000;
   }

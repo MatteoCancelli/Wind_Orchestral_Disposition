@@ -35,7 +35,6 @@ async function drawSections() {
   const svg = document.getElementById("chart");
   const cx = 500, cy = 500;
   
-  // Definizione delle dimensioni per ogni riga
   const rowDimensions = [
     { rInner: 50, rOuter: 150 },   // Riga 1
     { rInner: 150, rOuter: 260 },  // Riga 2
@@ -43,7 +42,6 @@ async function drawSections() {
     { rInner: 375, rOuter: 500 }   // Riga 4
   ];
 
-  // Filtra solo gli strumenti che hanno startAngle, endAngle e rowNumber definiti
   const validInstruments = instruments.filter(
     instrument => 
       instrument.startAngle !== "" && 
@@ -54,9 +52,8 @@ async function drawSections() {
   validInstruments.forEach((instrument, index) => {
     const rowIndex = parseInt(instrument.rowNumber) - 1;
     
-    // Verifica che il rowNumber sia valido
     if (rowIndex < 0 || rowIndex >= rowDimensions.length) {
-      console.error(`Numero di riga non valido per ${instrument.name}: ${instrument.rowNumber}`);
+      console.error(`Not valid row number ${instrument.name}: ${instrument.rowNumber}`);
       return;
     }
     
@@ -64,9 +61,8 @@ async function drawSections() {
     const startAngle = parseFloat(instrument.startAngle);
     const endAngle = parseFloat(instrument.endAngle);
     
-    // Verifica che startAngle e endAngle siano numeri validi
     if (isNaN(startAngle) || isNaN(endAngle)) {
-      console.error(`Angoli non validi per ${instrument.name}: startAngle=${instrument.startAngle}, endAngle=${instrument.endAngle}`);
+      console.error(`Not valid angle ${instrument.name}: startAngle=${instrument.startAngle}, endAngle=${instrument.endAngle}`);
       return;
     }
     
@@ -81,12 +77,12 @@ async function drawSections() {
 
     const group = document.createElementNS("http://www.w3.org/2000/svg", "a");
     // Usa il link dal JSON se disponibile
-    if (instrument.link && instrument.link !== "") {
-      group.setAttribute("href", instrument.link);
-    } else {
-      // Fallback al link predefinito
-      group.setAttribute("href", `/strumenti/${instrument.abbreviations[0]}.html`);
-    }
+    // if (instrument.link && instrument.link !== "") {
+    //   group.setAttribute("href", instrument.link);
+    // } else {
+    //   // Fallback al link predefinito
+    //   group.setAttribute("href", `/strumenti/${instrument.abbreviations[0]}.html`);
+    // }
 
     const path = document.createElementNS(
       "http://www.w3.org/2000/svg",

@@ -15,7 +15,7 @@
     "teachers_id": "",
     "pic": "",
     "startAngle": -25,
-    "endAngle": 25,
+    "endAngle": 0,
     "rowNumber": 1
   },
   {
@@ -24,7 +24,17 @@
     "courses_id": "",
     "teachers_id": "",
     "pic": "",
-    "startAngle": 25,
+    "startAngle": 0,
+    "endAngle": 65,
+    "rowNumber": 1
+  },
+  {
+    "name": "Ottavino",
+    "abbreviations": ["OTT", "PICCOLO"],
+    "courses_id": "",
+    "teachers_id": "",
+    "pic": "",
+    "startAngle": 65,
     "endAngle": 90,
     "rowNumber": 1
   },
