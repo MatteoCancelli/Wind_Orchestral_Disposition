@@ -65,24 +65,7 @@ function writeLabel(svgGroup, cx, cy, rInner, rOuter, startAngle, endAngle, name
   svgGroup.appendChild(text);
 }
 
-
-
-async function drawSections() {
-  const instruments = await fetchData();
-  const svg = document.getElementById("chart");
-  svg.innerHTML = ""; 
-
-  const bbox = svg.getBoundingClientRect(); 
-  const svgPixelWidth = bbox.width; 
-
-  const cx = 500, cy = 500; // viewBox coords
-  const rowDimensions = [
-    { rInner: 50, rOuter: 150 },
-    { rInner: 150, rOuter: 260 },
-    { rInner: 260, rOuter: 375 },
-    { rInner: 375, rOuter: 500 }
-  ];
-
+function renderSections(instruments, svg, cx, cy, rowDimensions, svgPixelWidth) {
   const validInstruments = instruments.filter(i =>
     i.startAngle !== "" && i.endAngle !== "" && i.rowNumber !== ""
   );
@@ -109,6 +92,25 @@ async function drawSections() {
 
     svg.appendChild(group);
   });
+}
+
+async function drawSections() {
+  const instruments = await fetchData();
+  const svg = document.getElementById("chart");
+  svg.innerHTML = ""; 
+
+  const bbox = svg.getBoundingClientRect(); 
+  const svgPixelWidth = bbox.width; 
+
+  const cx = 500, cy = 500; // viewBox coords
+  const rowDimensions = [
+    { rInner: 50, rOuter: 150 },
+    { rInner: 150, rOuter: 260 },
+    { rInner: 260, rOuter: 375 },
+    { rInner: 375, rOuter: 500 }
+  ];
+
+  renderSections(instruments, svg, cx, cy, rowDimensions, svgPixelWidth);
 }
 
 window.addEventListener("DOMContentLoaded", drawSections);
