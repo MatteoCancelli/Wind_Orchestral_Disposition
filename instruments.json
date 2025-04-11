@@ -3,7 +3,7 @@
     "name": "Clarinetto 1",
     "abbreviations": ["CL1", "C1"],
     "link": "",
-    "pic": "",
+    "pic": "img\\section\\Clarinet.jpg",
     "startAngle": -90,
     "endAngle": -25,
     "rowNumber": 1
@@ -13,7 +13,7 @@
     "abbreviations": ["OB", "OBOE"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Oboe.jpg",
     "startAngle": -25,
     "endAngle": 0,
     "rowNumber": 1
@@ -23,7 +23,7 @@
     "abbreviations": ["FL1", "FLUTE1"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Flute.jpg",
     "startAngle": 0,
     "endAngle": 65,
     "rowNumber": 1
@@ -33,7 +33,7 @@
     "abbreviations": ["OTT", "PICCOLO"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Piccolo.jpg",
     "startAngle": 65,
     "endAngle": 90,
     "rowNumber": 1
@@ -43,7 +43,7 @@
     "abbreviations": ["CL2", "C2"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Clarinet.jpg",
     "startAngle": -90,
     "endAngle": -50,
     "rowNumber": 2
@@ -53,7 +53,7 @@
     "abbreviations": ["CLB", "CB"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Bass_Clarinet.jpg",
     "startAngle": -50,
     "endAngle": -25,
     "rowNumber": 2
@@ -63,7 +63,7 @@
     "abbreviations": ["BSN", "BASSOON"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Bassoon.jpg",
     "startAngle": -25,
     "endAngle": 0,
     "rowNumber": 2
@@ -73,7 +73,7 @@
     "abbreviations": ["HF", "HORN"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\French_Horn.jpg",
     "startAngle": 0,
     "endAngle": 50,
     "rowNumber": 2
@@ -83,7 +83,7 @@
     "abbreviations": ["FL2", "FLUTE2"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Flute.jpg",
     "startAngle": 50,
     "endAngle": 90,
     "rowNumber": 2
@@ -93,7 +93,7 @@
     "abbreviations": ["CL3", "C3"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Clarinet.jpg",
     "startAngle": -90,
     "endAngle": -50,
     "rowNumber": 3
@@ -103,7 +103,7 @@
     "abbreviations": ["TP", "TRUMPET"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Trumpet.jpg",
     "startAngle": -50,
     "endAngle": 0,
     "rowNumber": 3
@@ -113,7 +113,7 @@
     "abbreviations": ["SAXB", "BARITONESAX"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Baritone_Sax.jpg",
     "startAngle": 0,
     "endAngle": 15,
     "rowNumber": 3
@@ -123,7 +123,7 @@
     "abbreviations": ["SAXT", "TENORSAX"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Tenor_Sax.jpg",
     "startAngle": 15,
     "endAngle": 40,
     "rowNumber": 3
@@ -133,7 +133,7 @@
     "abbreviations": ["SAXA", "ALTO"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Alto_Sax.jpg",
     "startAngle": 40,
     "endAngle": 90,
     "rowNumber": 3
@@ -143,7 +143,7 @@
     "abbreviations": ["PERC", "PERCUSSION"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Percussion.png",
     "startAngle": -90,
     "endAngle": 0,
     "rowNumber": 4
@@ -153,7 +153,7 @@
     "abbreviations": ["TUB", "TUBA"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Tuba.jpg",
     "startAngle": 0,
     "endAngle": 15,
     "rowNumber": 4
@@ -163,7 +163,7 @@
     "abbreviations": ["EUPH", "EUPHONIUM"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Euphonium.jpg",
     "startAngle": 15,
     "endAngle": 40,
     "rowNumber": 4
@@ -173,7 +173,7 @@
     "abbreviations": ["TB", "TROMBONE"],
     "courses_id": "",
     "teachers_id": "",
-    "pic": "",
+    "pic": "img\\section\\Trombone.png",
     "startAngle": 40,
     "endAngle": 90,
     "rowNumber": 4
