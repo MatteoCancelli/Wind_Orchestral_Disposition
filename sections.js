@@ -43,10 +43,16 @@ function writeLabel(svgGroup, cx, cy, rInner, rOuter, startAngle, endAngle, name
 
   let labelLines;
   if (realArcLength < approxTextWidth || arcHeight < approxTextHeight) {
-    labelLines = [abbreviations[0]];
-  } else {
+    let approxABBRWidth = abbreviations[1].length * fontSizePx * 0.5;
+    let approxABBRHeight = abbreviations[1].length * fontSizePx * 1.6; 
+    if (realArcLength > approxABBRWidth || arcHeight > approxABBRHeight) {
+        labelLines = [abbreviations[1]];
+    } else {
+        labelLines = [abbreviations[0]];
+    }
+} else {
     labelLines = name.split(" ");
-  }
+}
 
   const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
   text.setAttribute("x", labelPos.x);
